@@ -9,5 +9,4 @@ class Category:
 
 
 teste = Category("Comida")
-#atualização
 print (teste.category)
