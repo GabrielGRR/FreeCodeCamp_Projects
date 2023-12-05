@@ -12,13 +12,13 @@ class Hat:
             #exemplo de output: ["red", "red", "blue"]
 
     def draw(self, num_balls):
-        balls_drawn = []  # balls drawn at that instance
-        if num_balls > len(self.contents): # only draw _ balls if there are more balls than _ in the hat               
-            while i < num_balls: # draw random balls from the hat
-                ball = random.choice(self.contents)
-                balls_drawn.append(ball)
-                self.contents.remove(ball)
-                i+=1
+        balls_drawn = []
+        if num_balls > len(self.contents):
+            num_balls = len(self.contents)  # Garante que você não retire mais bolas do que existem
+        for _ in range(num_balls):
+            ball = random.choice(self.contents)
+            balls_drawn.append(ball)
+            self.contents.remove(ball)
         return balls_drawn
 
 def experiment(expected_balls, num_balls_drawn, num_experiments, hat=None):
@@ -28,19 +28,23 @@ def experiment(expected_balls, num_balls_drawn, num_experiments, hat=None):
     for i in range(num_experiments):
         hat_copy = copy.deepcopy(hat) # create a copy of the hat
         balls_drawn = hat_copy.draw(num_balls_drawn) # draw balls from the hat
-        expected_balls_list = []
-        for color, quantity in expected_balls.items():
-            expected_balls_list.extend([color] * quantity)
-        balls_drawn = set(balls_drawn)
-        expected_balls_list = set(expected_balls_list)
-        if expected_balls_list.issubset(balls_drawn):
-            num_success += 1 
+        # Verifica se as contagens das bolas desenhadas correspondem às contagens esperadas
+        success = True
+        for color, expected_count in expected_balls.items():
+            drawn_count = balls_drawn.count(color)
+            if drawn_count < expected_count:
+                success = False
+                break
+
+        if success:
+            num_success += 1       
 
     probability = num_success / num_experiments
     return probability
-        
 
-hat = Hat(black=6, red=4, green=3)
-probability = experiment(hat=hat, expected_balls={"red":2,"green":1}, num_balls_drawn=5,num_experiments=2000)
+""" hat = Hat(yellow=5,red=1,green=3,blue=9,test=1)
+probability = experiment(hat=hat, expected_balls={"yellow":2,"blue":3,"test":1}, num_balls_drawn=20, num_experiments=100)
 
-print(probability)
+
+
+print(probability) """
