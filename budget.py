@@ -15,8 +15,12 @@ class Category:
         self.ledger.extend([{"amount": -amount if amount >= 0 else amount, "description": description}])
         return self.ledger
 
-    def get_balance(self, balance):
-        self.balance = 
+    def get_balance(self):
+        balance = 0
+        for entry in self.ledger[1:]:
+            value = entry['amount']
+            balance += value
+        return balance
 
 teste = Category("Comida")
 teste2 = Category("Roupa")
@@ -26,3 +30,4 @@ print(teste.ledger)
 print(teste2.ledger)
 teste2.withdraw(-50, "camisa")
 print(teste2.ledger)
+print(teste2.get_balance())
