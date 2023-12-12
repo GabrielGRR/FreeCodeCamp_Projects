@@ -21,13 +21,25 @@ class Category:
             value = entry['amount']
             balance += value
         return balance
+    
+    def transfer(self, amount, change):
+        if amount < self.get_balance():
+            self.withdraw(amount, f"Transfer to {change.category}")
+            change.deposit(amount, f"Transfer from {self.category}")
+            return True
+        else:
+            return False
 
-teste = Category("Comida")
-teste2 = Category("Roupa")
-teste.deposit(200, "hamburger")
-teste2.deposit(100, "camisa")
-print(teste.ledger)
-print(teste2.ledger)
-teste2.withdraw(-50, "camisa")
-print(teste2.ledger)
-print(teste2.get_balance())
+
+food = Category("Comida")
+clothes = Category("Roupa")
+food.deposit(200, "hamburger")
+clothes.deposit(100, "camisa")
+print(food.ledger)
+print(clothes.ledger)
+clothes.withdraw(-50, "camisa")
+print(clothes.ledger)
+print(clothes.get_balance())
+clothes.transfer(25, food)
+print(food.get_balance())
+print(clothes.get_balance())
