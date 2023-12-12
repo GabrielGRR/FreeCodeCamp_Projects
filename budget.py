@@ -7,6 +7,14 @@ class Category:
         self.category = category
         self.ledger.extend([category])
 
+    def __str__(self):
+        texto = f"{self.ledger[0]:*^30}\n"
+        first_deposit = self.ledger[1]['amount']
+        texto += f"{'initial deposit':<23}" + f'{first_deposit:>7.2f}'
+        
+        texto +=f"\n"
+        return texto
+
     def deposit(self, amount, description = ""):
         self.ledger.extend([{"amount": amount, "description": description}])
         return self.ledger
@@ -29,9 +37,14 @@ class Category:
             return True
         else:
             return False
+    def check_funds(self, amount):
+        if amount > self.get_balance():
+            return False
+        else:
+            return True
 
 
-food = Category("Comida")
+""" food = Category("Comida")
 clothes = Category("Roupa")
 food.deposit(200, "hamburger")
 clothes.deposit(100, "camisa")
@@ -42,4 +55,12 @@ print(clothes.ledger)
 print(clothes.get_balance())
 clothes.transfer(25, food)
 print(food.get_balance())
-print(clothes.get_balance())
+print(clothes.get_balance()) """
+
+food = Category("Comida")
+clothes = Category("Roupa")
+food.deposit(200, "hamburger")
+clothes.deposit(100, "camisa")
+clothes.withdraw(-50, "camisa")
+clothes.transfer(25, food)
+print(food)
