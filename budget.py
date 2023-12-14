@@ -12,7 +12,7 @@ class Category:
     def __init__(self, category):
         self.ledger = []
         self.category = category
-        self.ledger.extend([category])
+        #self.ledger.extend([category])
         self.instances.append(self)  # Adiciona a instância à lista
 
     #RECEIPT FUNCTION, EXPECTED OUTPUT EXAMPLE:
@@ -23,10 +23,10 @@ class Category:
     # Total: 225.00
 
     def __str__(self):
-        text = f"{self.ledger[0]:*^30}\n"
+        text = f"{self.category:*^30}\n"
 
         receipt_item = ""
-        for item in self.ledger[1:]:
+        for item in self.ledger:
             receipt_item = f"{item['description'][:23]:<23}" + f"{item['amount']:>7.2f}\n"
             text += receipt_item
         text += f"Total: {self.get_balance():.2f}"
@@ -50,7 +50,7 @@ class Category:
     #FINAL VALUE, FLOAT VALUE OUTPUT
     def get_balance(self):
         balance = 0.0
-        for entry in self.ledger[1:]:
+        for entry in self.ledger:
             value = entry['amount']
             balance += value
         return balance
@@ -78,13 +78,13 @@ def create_spend_chart(categories):
     values = []
     itens = []
     for category_instance in categories:
-        itens.append(category_instance.ledger[0])
+        itens.append(category_instance.category)
         values.append(category_instance.get_balance())
 
     
     total_value = sum(values)
     percentage = 100
-    qtt_categories = len(Category.instances)
+    qtt_categories = len(categories)
 
     category_text = "Percentage spent by category\n"
 
@@ -116,18 +116,18 @@ def create_spend_chart(categories):
                 category_text+=" "
             item_counter +=1
         letter_counter +=1
-        category_text+="\n"
+        category_text+="\n" if letter_counter < len(biggest_len) else ""
 
     return category_text
 
-
+""" 
 food = Category("Food")
 food.deposit(1000, "initial deposit")
 food.withdraw(10.15, "groceries")
 food.withdraw(15.89, "restaurant and more food for dessert")
 food.withdraw(12)
 print(food.get_balance())
-print(food) 
+print(food)  """
 """ 
 food = Category("Food")
 clothes = Category("Clothes")
