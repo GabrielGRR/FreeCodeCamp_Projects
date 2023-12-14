@@ -24,11 +24,10 @@ class Category:
 
     def __str__(self):
         text = f"{self.ledger[0]:*^30}\n"
-        first_deposit = self.ledger[1]['amount']
-        text += f"{'initial deposit':<23}" + f'{first_deposit:>7.2f}\n'
+
         receipt_item = ""
         for item in self.ledger[1:]:
-            receipt_item = f"{item['description']:<23}" + f"{item['amount']:>7.2f}\n"
+            receipt_item = f"{item['description'][:23]:<23}" + f"{item['amount']:>7.2f}\n"
             text += receipt_item
         text += f"Total: {self.get_balance():.2f}"
         return text
@@ -42,8 +41,11 @@ class Category:
     #WITHDRAW FUNCTION, EXPECTED INPUT:
     # clothes.withdraw(-50, "Shirt")    
     def withdraw(self, amount, description = ""):
-        self.ledger.extend([{"amount": -amount if amount >= 0 else amount, "description": description}])
-        return self.ledger
+        if amount < self.get_balance():
+            self.ledger.extend([{"amount": -amount if amount >= 0 else amount, "description": description}])
+            return True
+        else:
+            return False
 
     #FINAL VALUE, FLOAT VALUE OUTPUT
     def get_balance(self):
@@ -71,12 +73,11 @@ class Category:
         else:
             return True
 
-def create_spend_chart():
+def create_spend_chart(categories):
     
     values = []
     itens = []
-    
-    for category_instance in Category.instances:
+    for category_instance in categories:
         itens.append(category_instance.ledger[0])
         values.append(category_instance.get_balance())
 
@@ -120,7 +121,13 @@ def create_spend_chart():
     return category_text
 
 
-
+food = Category("Food")
+food.deposit(1000, "initial deposit")
+food.withdraw(10.15, "groceries")
+food.withdraw(15.89, "restaurant and more food for dessert")
+food.withdraw(12)
+print(food.get_balance())
+print(food) 
 """ 
 food = Category("Food")
 clothes = Category("Clothes")
