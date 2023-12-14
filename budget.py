@@ -13,7 +13,8 @@ class Category:
         self.ledger = []
         self.category = category
         self.ledger.extend([category])
-        self.instances.append(category) #adiciona lista de instancias
+        self.instances.append(self)  # Adiciona a instância à lista
+
     #RECEIPT FUNCTION, EXPECTED OUTPUT EXAMPLE:
     # *************Food*************
     # initial deposit         200.00
@@ -71,34 +72,56 @@ class Category:
             return True
 
 def create_spend_chart():
-    category_text = "Percentage spent by category\n"
-    test_maximum_value = 500
-    category_value = 350 #self.get_balance()
-    rounded_percentage = round(category_value/test_maximum_value*10)*10 #arredonda para o valor mais próximo multiplo de 10
+    
+    values = []
+    itens = []
+    
+    for category_instance in Category.instances:
+        itens.append(category_instance.ledger[0])
+        values.append(category_instance.get_balance())
+
+    
+    total_value = sum(values)
     percentage = 100
     qtt_categories = len(Category.instances)
+
+    category_text = "Percentage spent by category\n"
+
     while percentage >= 0:
         category_text += f"{percentage:>3}"+"|"
-        if rounded_percentage >= percentage:
-            category_text += "  o"
+        for instance in range(qtt_categories):
+            rounded_percentage = round(values[instance]/total_value*10)*10 #arredonda para o valor mais próximo multiplo de 10
+            if rounded_percentage >= percentage:
+                category_text += "  o"
+            else:
+                category_text += " "*3
         category_text += "\n"
         percentage -= 10
-    category_text+="    "+"-"*4
+
+    category_text+="    "+"-"*(3*qtt_categories)+"--\n"
+
+
+    biggest_len = max(itens,key=len)
+    letter_counter = 0
+    while letter_counter <= len(biggest_len):
+        category_text += " "*4
+        item_counter = 0
+        while item_counter < qtt_categories:
+            word = itens[item_counter]
+            category_text += "  "
+            try:
+                category_text+=word[letter_counter]
+            except:
+                category_text+=" "
+            item_counter +=1
+        letter_counter +=1
+        category_text+="\n"
+
     return category_text
 
-"""     first_deposit = self.ledger[1]['amount']
-    category_text += f"{'initial deposit':<23}" + f'{first_deposit:>7.2f}\n'
-    receipt_item = ""
-    for item in self.ledger[1:]:
-        receipt_item = f"{item['description']:<23}" + f"{item['amount']:>7.2f}\n"
-        category_text += receipt_item
-    category_text += f"Total: {self.get_balance():.2f}"
-    return category_text """
 
 
-print(round(320/500*10)*10)
-
-
+""" 
 food = Category("Food")
 clothes = Category("Clothes")
 food.deposit(200, "Hamburguer")
@@ -109,17 +132,4 @@ print(food)
 print(food.ledger)
 #create_spend_chart(food)
 print(create_spend_chart())
-print((Category.instances))
-
-""" food = Category("Food")
-clothes = Category("Clothes")
-food.deposit(200, "Hamburguer")
-clothes.deposit(100, "Shirt")
-print(food.ledger)
-print(clothes.ledger)
-clothes.withdraw(-50, "Shirt")
-print(clothes.ledger)
-print(clothes.get_balance())
-clothes.transfer(25, food)
-print(food.get_balance())
-print(clothes.get_balance()) """
+ """
